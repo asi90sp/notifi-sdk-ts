@@ -110,6 +110,7 @@ export type CompleteLoginViaTransactionResult = Readonly<User>;
 export type ClientUpdateAlertInput = Readonly<{
   alertId: string;
   emailAddress: string | null;
+  discord: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
@@ -139,6 +140,7 @@ export type ClientCreateAlertInput = Readonly<{
   emailAddress: string | null;
   phoneNumber: string | null;
   telegramId: string | null;
+  discord: string | null;
   groupName?: string;
   targetGroupName?: string;
   webhook?: ClientCreateWebhookParams;
@@ -207,6 +209,7 @@ export type ClientEnsureTargetGroupInput = Readonly<{
   phoneNumber: string | null;
   telegramId: string | null;
   webhook?: ClientCreateWebhookParams;
+  discord: string | null;
 }>;
 
 /**

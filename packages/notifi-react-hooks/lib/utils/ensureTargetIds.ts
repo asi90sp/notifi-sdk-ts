@@ -4,13 +4,16 @@ import {
   CreateSmsTargetService,
   CreateTelegramTargetService,
   CreateWebhookTargetService,
+  DiscordTarget,
   EmailTarget,
   SmsTarget,
   TelegramTarget,
   WebhookTarget,
 } from '@notifi-network/notifi-core';
 
+import { CreateDiscordTargetService } from './../../../notifi-core/lib/operations/CreateDiscordTarget';
 import {
+  ensureDiscord,
   ensureEmail,
   ensureSms,
   ensureTelegram,
@@ -21,12 +24,14 @@ export type ExistingData = Readonly<{
   emailTargets?: EmailTarget[];
   smsTargets?: SmsTarget[];
   telegramTargets?: TelegramTarget[];
+  discordTargets?: DiscordTarget[];
   webhookTargets?: WebhookTarget[];
 }>;
 
 const ensureTargetIds = async (
   service: CreateEmailTargetService &
     CreateSmsTargetService &
+    CreateDiscordTargetService &
     CreateTelegramTargetService &
     CreateWebhookTargetService,
   existing: ExistingData,
@@ -35,20 +40,31 @@ const ensureTargetIds = async (
     phoneNumber: string | null;
     telegramId: string | null;
     webhook?: ClientCreateWebhookParams;
+    discord: string | null;
   }>,
 ) => {
-  const { emailAddress, phoneNumber, telegramId, webhook } = input;
-  const [emailTargetId, smsTargetId, telegramTargetId, webhookTargetId] =
-    await Promise.all([
-      ensureEmail(service, existing.emailTargets, emailAddress),
-      ensureSms(service, existing.smsTargets, phoneNumber),
-      ensureTelegram(service, existing.telegramTargets, telegramId),
-      ensureWebhook(service, existing.webhookTargets, webhook),
-    ]);
+  const { emailAddress, phoneNumber, telegramId, webhook, discord } = input;
+  const [
+    emailTargetId,
+    smsTargetId,
+    telegramTargetId,
+    webhookTargetId,
+    discordTargetId,
+  ] = await Promise.all([
+    ensureEmail(service, existing.emailTargets, emailAddress),
+    ensureSms(service, existing.smsTargets, phoneNumber),
+    ensureTelegram(service, existing.telegramTargets, telegramId),
+    ensureWebhook(service, existing.webhookTargets, webhook),
+    ensureDiscord(service, existing.discordTargets, discord),
+  ]);
 
   const emailTargetIds = [];
   if (emailTargetId !== null) {
     emailTargetIds.push(emailTargetId);
+  }
+  const discordTargetIds = [];
+  if (discordTargetId !== null) {
+    discordTargetIds.push(discordTargetId);
   }
 
   const smsTargetIds = [];
@@ -66,7 +82,13 @@ const ensureTargetIds = async (
     webhookTargetIds.push(webhookTargetId);
   }
 
-  return { emailTargetIds, smsTargetIds, telegramTargetIds, webhookTargetIds };
+  return {
+    emailTargetIds,
+    smsTargetIds,
+    telegramTargetIds,
+    webhookTargetIds,
+    discordTargetIds,
+  };
 };
 
 export default ensureTargetIds;

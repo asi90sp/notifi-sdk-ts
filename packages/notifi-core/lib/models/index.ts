@@ -4,6 +4,7 @@ export * from './ClientConfiguration';
 export * from './ConnectedWallet';
 export * from './ConversationMessages';
 export * from './EmailTarget';
+export * from './DiscordTarget';
 export * from './Filter';
 export * from './NotificationHistory';
 export * from './Operation';

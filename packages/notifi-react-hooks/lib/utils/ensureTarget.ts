@@ -1,9 +1,11 @@
 import {
   ClientCreateWebhookParams,
+  CreateDiscordTargetService,
   CreateEmailTargetService,
   CreateSmsTargetService,
   CreateTelegramTargetService,
   CreateWebhookTargetService,
+  DiscordTarget,
   EmailTarget,
   SmsTarget,
   TelegramTarget,
@@ -56,6 +58,16 @@ const ensureEmail = ensureTarget(
   (value: string) => value.toLowerCase(),
 );
 
+const ensureDiscord = ensureTarget(
+  async (service: CreateDiscordTargetService, value: string) =>
+    await service.createDiscordTarget({
+      name: value.toLowerCase(),
+      value: value.toLowerCase(),
+    }),
+  (arg: DiscordTarget) => arg.name?.toLowerCase() ?? null,
+  (value: string) => value.toLowerCase(),
+);
+
 const ensureSms = ensureTarget(
   async (service: CreateSmsTargetService, value: string) =>
     await service.createSmsTarget({
@@ -104,6 +116,6 @@ const ensureWebhook = async (
   return created.id;
 };
 
-export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook };
+export { ensureEmail, ensureSms, ensureTelegram, ensureWebhook, ensureDiscord };
 
 export default ensureTarget;

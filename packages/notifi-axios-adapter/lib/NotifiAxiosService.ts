@@ -6,6 +6,7 @@ import broadcastMessageImpl from './mutations/broadcastMessageImpl';
 import completeLogInByTransactionImpl from './mutations/completeLogInByTransaction';
 import connectWalletImpl from './mutations/connectWalletImpl';
 import createAlertImpl from './mutations/createAlertImpl';
+import createDiscordTargetImpl from './mutations/createDiscordTargetImpl';
 import createEmailTargetImpl from './mutations/createEmailTargetImpl';
 import createSmsTargetImpl from './mutations/createSmsTargetImpl';
 import createSourceGroupImpl from './mutations/createSourceGroupImpl';
@@ -28,6 +29,7 @@ import getAlertsImpl from './queries/getAlertsImpl';
 import getConfigurationForDappImpl from './queries/getConfigurationForDappImpl';
 import getConnectedWalletsImpl from './queries/getConnectedWalletsImpl';
 import getConversationMessagesImpl from './queries/getConversationMessagesImpl';
+import getDiscordTargetsImpl from './queries/getDiscordTargetsImpl';
 import getEmailTargetsImpl from './queries/getEmailTargetsImpl';
 import getFiltersImpl from './queries/getFiltersImpl';
 import getNotificationHistoryImpl from './queries/getNotificationHistoryImpl';
@@ -51,6 +53,7 @@ export class NotifiAxiosService implements NotifiService {
   createAlert: NotifiService['createAlert'];
   createEmailTarget: NotifiService['createEmailTarget'];
   createSmsTarget: NotifiService['createSmsTarget'];
+  createDiscordTarget: NotifiService['createDiscordTarget'];
   createSource: NotifiService['createSource'];
   createSourceGroup: NotifiService['createSourceGroup'];
   createSupportConversation: NotifiService['createSupportConversation'];
@@ -73,6 +76,7 @@ export class NotifiAxiosService implements NotifiService {
   getSources: NotifiService['getSources'];
   getTargetGroups: NotifiService['getTargetGroups'];
   getTelegramTargets: NotifiService['getTelegramTargets'];
+  getDiscordTargets: NotifiService['getDiscordTargets'];
   getTopics: NotifiService['getTopics'];
   getWebhookTargets: NotifiService['getWebhookTargets'];
   logInFromDapp: NotifiService['logInFromDapp'];
@@ -113,6 +117,7 @@ export class NotifiAxiosService implements NotifiService {
     this.createAlert = createAlertImpl.bind(null, a);
     this.createEmailTarget = createEmailTargetImpl.bind(null, a);
     this.createSmsTarget = createSmsTargetImpl.bind(null, a);
+    this.createDiscordTarget = createDiscordTargetImpl.bind(null, a);
     this.createTargetGroup = createTargetGroupImpl.bind(null, a);
     this.createTelegramTarget = createTelegramTargetImpl.bind(null, a);
     this.createSource = createSourceImpl.bind(null, a);
@@ -131,6 +136,7 @@ export class NotifiAxiosService implements NotifiService {
     this.getConnectedWallets = getConnectedWalletsImpl.bind(null, a);
     this.getConversationMessages = getConversationMessagesImpl.bind(null, a);
     this.getEmailTargets = getEmailTargetsImpl.bind(null, a);
+    this.getDiscordTargets = getDiscordTargetsImpl.bind(null, a);
     this.getFilters = getFiltersImpl.bind(null, a);
     this.getNotificationHistory = getNotificationHistoryImpl.bind(null, a);
     this.getSmsTargets = getSmsTargetsImpl.bind(null, a);
