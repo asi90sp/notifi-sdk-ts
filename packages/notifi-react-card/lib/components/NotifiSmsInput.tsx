@@ -46,6 +46,7 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
     formState,
     setPhoneNumber,
     setPhoneNumberErrorMessage,
+    setHasChanges,
   } = useNotifiForm();
 
   const { phoneNumber: phoneNumberErrorMessage } = formErrorMessages;
@@ -164,7 +165,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
               intercomSmsDropdownSelectStyle,
               classNames?.dropdownSelectField,
             )}
-            onChange={(e) => handleDialCodeChange(e)}
+            onChange={(e) => {
+              setHasChanges(true);
+              handleDialCodeChange(e);
+            }}
             value={phoneValues.dialCode}
           >
             {countryCodes}
@@ -179,7 +183,10 @@ export const NotifiSmsInput: React.FC<NotifiSmsInputProps> = ({
           disabled={disabled}
           name="notifi-sms"
           onBlur={validateSmsInput}
-          onChange={(e) => handleBaseNumberChange(e)}
+          onChange={(e) => {
+            setHasChanges(true);
+            handleBaseNumberChange(e);
+          }}
           onFocus={() => setPhoneNumberErrorMessage('')}
           placeholder={copy?.placeholder ?? 'Phone Number'}
           type="tel"
