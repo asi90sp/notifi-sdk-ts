@@ -19,6 +19,7 @@ import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMes
 import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
 import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer';
 import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
+import { LiquidationAlertDetailRenderer } from '../../AlertHistory/LiquidationAlertDetailRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
@@ -39,6 +40,21 @@ export type AlertHistoryViewProps = Readonly<{
     AlertCard: AlertNotificationViewProps['classNames'];
   }>;
 }>;
+
+const testLiquidationEventDetail: NotificationHistoryEntry = {
+  __typename: 'NotificationHistoryEntry',
+  id: 'testid',
+  createdDate: new Date().toISOString(),
+  eventId: 'testEbentid',
+  detail: {
+    __typename: 'LiquidationEventDetails',
+    genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
+    genericTitle: 'Generic Title to show',
+    genericSubject: 'genericSubject to show',
+  },
+  read: false,
+  targets: [],
+};
 
 export const AlertCard: React.FC<{
   notification: NotificationHistoryEntry;
@@ -100,6 +116,17 @@ export const AlertCard: React.FC<{
           classNames={classNames}
         />
       );
+    case 'LiquidationEventDetails':
+      return (
+        <LiquidationAlertDetailRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={detail.genericTitle}
+          createdDate={notification.createdDate}
+          subject={detail.genericSubject}
+          message={detail.genericMessageBody}
+          classNames={classNames}
+        />
+      );
   }
   return null;
 };
@@ -139,6 +166,9 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       });
 
       const nodes = result.nodes ?? [];
+
+      nodes.push(testLiquidationEventDetail);
+
       setAllNodes((existing) => existing.concat(nodes));
 
       setEndCursor(result.pageInfo.endCursor);

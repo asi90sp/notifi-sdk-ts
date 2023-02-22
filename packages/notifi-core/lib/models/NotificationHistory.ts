@@ -166,6 +166,13 @@ export type WalletsActivityReportWallet = {
   maxPurchaseTokenAddress?: string | undefined;
 };
 
+export type LiquidationEventDetails = {
+  __typename: 'LiquidationEventDetails';
+  genericMessageBody: string;
+  genericTitle: string;
+  genericSubject: string;
+};
+
 export type EntryDetailType =
   | AccountBalanceChangedEventDetails
   | BroadcastMessageEventDetails
@@ -176,7 +183,8 @@ export type EntryDetailType =
   | HealthValueOverThresholdEventDetails
   | NftAuctionChangedEventDetails
   | NftCollectionsReportEventDetails
-  | WalletsActivityReportEventDetails;
+  | WalletsActivityReportEventDetails
+  | LiquidationEventDetails;
 
 export type NotificationHistoryEntry = Readonly<{
   __typename?: 'NotificationHistoryEntry';

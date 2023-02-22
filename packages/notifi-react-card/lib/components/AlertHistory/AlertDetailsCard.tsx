@@ -45,6 +45,11 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
           ),
         };
       }
+      case 'LiquidationEventDetails':
+        return {
+          topContent: detail.genericSubject,
+          bottomContent: detail.genericMessageBody,
+        };
     }
 
     return {};
