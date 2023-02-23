@@ -17,9 +17,11 @@ import {
 import { AlertNotificationViewProps } from '../../AlertHistory/AlertNotificationRow';
 import { BroadcastMessageChangedRenderer } from '../../AlertHistory/BroadcastMessageChangedRenderer';
 import { ChatMessageReceivedRenderer } from '../../AlertHistory/ChatMessageReceivedRenderer';
+import { DepositDetailRenderer as DepositEventDetailRenderer } from '../../AlertHistory/DepositDetailRenderer';
 import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer';
 import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 import { LiquidationAlertDetailRenderer } from '../../AlertHistory/LiquidationAlertDetailRenderer';
+import { ReminderDetailEventRenderer } from '../../AlertHistory/ReminderDetailEventRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
@@ -51,6 +53,36 @@ const testLiquidationEventDetail: NotificationHistoryEntry = {
     genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
     genericTitle: 'Generic Title to show',
     genericSubject: 'genericSubject to show',
+  },
+  read: false,
+  targets: [],
+};
+
+const testRedeemReminder: NotificationHistoryEntry = {
+  __typename: 'NotificationHistoryEntry',
+  id: 'testid',
+  createdDate: new Date().toISOString(),
+  eventId: 'redeemEventId',
+  detail: {
+    __typename: 'RedeemReminderEventDetails',
+    genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
+    genericTitle: 'Generic Title to show',
+    genericSubject: 'Be sure to redeem your account soon',
+  },
+  read: false,
+  targets: [],
+};
+
+const testDepositEventReminder: NotificationHistoryEntry = {
+  __typename: 'NotificationHistoryEntry',
+  id: 'testid',
+  createdDate: new Date().toISOString(),
+  eventId: 'depositEventDetail',
+  detail: {
+    __typename: 'DepositEventDetails',
+    genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
+    genericTitle: 'Generic Title to show',
+    genericSubject: 'Be sure to unstake your account',
   },
   read: false,
   targets: [],
@@ -127,6 +159,29 @@ export const AlertCard: React.FC<{
           classNames={classNames}
         />
       );
+    case 'DepositEventDetails':
+      return (
+        <DepositEventDetailRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={detail.genericTitle}
+          createdDate={notification.createdDate}
+          subject={detail.genericSubject}
+          message={detail.genericMessageBody}
+          classNames={classNames}
+        />
+      );
+    case 'UnstakeReminderEventDetails':
+    case 'RedeemReminderEventDetails':
+      return (
+        <ReminderDetailEventRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={detail.genericTitle}
+          createdDate={notification.createdDate}
+          subject={detail.genericSubject}
+          message={detail.genericMessageBody}
+          classNames={classNames}
+        />
+      );
   }
   return null;
 };
@@ -167,7 +222,9 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
 
       const nodes = result.nodes ?? [];
 
-      nodes.push(testLiquidationEventDetail);
+      nodes.unshift(testLiquidationEventDetail);
+      nodes.unshift(testRedeemReminder);
+      nodes.unshift(testDepositEventReminder);
 
       setAllNodes((existing) => existing.concat(nodes));
 

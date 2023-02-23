@@ -173,6 +173,27 @@ export type LiquidationEventDetails = {
   genericSubject: string;
 };
 
+export type UnstakeReminderEventDetails = {
+  __typename: 'UnstakeReminderEventDetails';
+  genericMessageBody: string;
+  genericTitle: string;
+  genericSubject: string;
+};
+
+export type RedeemReminderEventDetails = {
+  __typename: 'RedeemReminderEventDetails';
+  genericMessageBody: string;
+  genericTitle: string;
+  genericSubject: string;
+};
+
+export type DepositEventDetails = {
+  __typename: 'DepositEventDetails';
+  genericMessageBody: string;
+  genericTitle: string;
+  genericSubject: string;
+};
+
 export type EntryDetailType =
   | AccountBalanceChangedEventDetails
   | BroadcastMessageEventDetails
@@ -184,7 +205,10 @@ export type EntryDetailType =
   | NftAuctionChangedEventDetails
   | NftCollectionsReportEventDetails
   | WalletsActivityReportEventDetails
-  | LiquidationEventDetails;
+  | LiquidationEventDetails
+  | UnstakeReminderEventDetails
+  | RedeemReminderEventDetails
+  | DepositEventDetails;
 
 export type NotificationHistoryEntry = Readonly<{
   __typename?: 'NotificationHistoryEntry';
