@@ -22,6 +22,7 @@ import { GenericDetailRenderer } from '../../AlertHistory/GenericDetailRenderer'
 import { HealthValueOverThresholdEventRenderer } from '../../AlertHistory/HealthValueOverThresholdEventRenderer';
 import { LiquidationAlertDetailRenderer } from '../../AlertHistory/LiquidationAlertDetailRenderer';
 import { ReminderDetailEventRenderer } from '../../AlertHistory/ReminderDetailEventRenderer';
+import { RewardIconRenderer } from '../../AlertHistory/RewardIconRenderer';
 
 export type AlertHistoryViewProps = Readonly<{
   noAlertDescription?: string;
@@ -83,6 +84,20 @@ const testDepositEventReminder: NotificationHistoryEntry = {
     genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
     genericTitle: 'Generic Title to show',
     genericSubject: 'Be sure to unstake your account',
+  },
+  read: false,
+  targets: [],
+};
+const testStakingReward: NotificationHistoryEntry = {
+  __typename: 'NotificationHistoryEntry',
+  id: 'testid',
+  createdDate: new Date().toISOString(),
+  eventId: 'stakingReward',
+  detail: {
+    __typename: 'StakingRewardEventDetails',
+    genericMessageBody: 'heyfsadfasdfasdfasdfasdf',
+    genericTitle: 'Generic Title to show',
+    genericSubject: 'StakingRewardEventDetailst',
   },
   read: false,
   targets: [],
@@ -170,6 +185,17 @@ export const AlertCard: React.FC<{
           classNames={classNames}
         />
       );
+    case 'StakingRewardEventDetails':
+      return (
+        <RewardIconRenderer
+          handleAlertEntrySelection={handleAlertEntrySelection}
+          notificationTitle={detail.genericTitle}
+          createdDate={notification.createdDate}
+          subject={detail.genericSubject}
+          message={detail.genericMessageBody}
+          classNames={classNames}
+        />
+      );
     case 'UnstakeReminderEventDetails':
     case 'RedeemReminderEventDetails':
       return (
@@ -225,6 +251,7 @@ export const AlertHistoryView: React.FC<AlertHistoryViewProps> = ({
       nodes.unshift(testLiquidationEventDetail);
       nodes.unshift(testRedeemReminder);
       nodes.unshift(testDepositEventReminder);
+      nodes.unshift(testStakingReward);
 
       setAllNodes((existing) => existing.concat(nodes));
 

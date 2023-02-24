@@ -193,6 +193,12 @@ export type DepositEventDetails = {
   genericTitle: string;
   genericSubject: string;
 };
+export type StakingRewardEventDetails = {
+  __typename: 'StakingRewardEventDetails';
+  genericMessageBody: string;
+  genericTitle: string;
+  genericSubject: string;
+};
 
 export type EntryDetailType =
   | AccountBalanceChangedEventDetails
@@ -208,7 +214,8 @@ export type EntryDetailType =
   | LiquidationEventDetails
   | UnstakeReminderEventDetails
   | RedeemReminderEventDetails
-  | DepositEventDetails;
+  | DepositEventDetails
+  | StakingRewardEventDetails;
 
 export type NotificationHistoryEntry = Readonly<{
   __typename?: 'NotificationHistoryEntry';

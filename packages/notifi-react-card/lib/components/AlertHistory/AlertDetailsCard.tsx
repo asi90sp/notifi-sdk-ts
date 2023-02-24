@@ -46,6 +46,9 @@ export const AlertDetailsCard: React.FC<AlertDetailsProps> = ({
         };
       }
       case 'LiquidationEventDetails':
+      case 'DepositEventDetails':
+      case 'RedeemReminderEventDetails':
+      case 'StakingRewardEventDetails':
         return {
           topContent: detail.genericSubject,
           bottomContent: detail.genericMessageBody,
