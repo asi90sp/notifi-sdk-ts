@@ -52,6 +52,8 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     targetGroupName: 'Default',
   });
   const [enabled, setEnabled] = useState(false);
+  const [isNotificationLoading, setIsNotificationLoading] =
+    useState<boolean>(false);
   // This indicates which box to select
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [initialRatio, setInitialRatio] = useState<number | null>(null);
@@ -75,7 +77,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
-
     const ratios = config.checkRatios ?? [];
     const checkRatios = ratios.map((ratio) => ratio.ratio);
 
@@ -110,6 +111,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
+    setIsNotificationLoading(true);
 
     setErrorMessage('');
     if (customInputRef.current) {
@@ -146,6 +148,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         setErrorMessage(INVALID_NUMBER);
       }
     }
+    setIsNotificationLoading(false);
   };
 
   const handleKeypressUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -191,6 +194,8 @@ export const EventTypeCustomHealthCheckRow: React.FC<
     if (loading) {
       return;
     }
+    setIsNotificationLoading(true);
+
     setErrorMessage('');
     if (!enabled && initialRatio !== null) {
       instantSubscribe({
@@ -207,14 +212,21 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           percentage: initialRatio,
         }),
         alertName,
-      }).catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+      })
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     } else {
       instantSubscribe({
         alertConfiguration: null,
         alertName: alertName,
       })
         .then(() => setCustomValue(''))
-        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE));
+        .catch(() => setErrorMessage(UNABLE_TO_SUBSCRIBE))
+        .finally(() => {
+          setIsNotificationLoading(false);
+        });
     }
   }, [initialRatio, enabled]);
 
@@ -244,6 +256,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
           setChecked={handleHealthCheckSubscription}
         />
       </div>
+      {isNotificationLoading ? 'Loading...' : 'Notifications loaded'}
       {enabled && config.checkRatios?.length ? (
         <>
           <div
@@ -291,6 +304,7 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             <input
               ref={customInputRef}
               onKeyUp={(e) => handleKeypressUp(e)}
+              type="number"
               onFocus={(e) =>
                 (e.target.placeholder =
                   config.numberType === 'percentage' ? '0.00' : '0')
