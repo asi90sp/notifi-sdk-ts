@@ -241,13 +241,8 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         .then((res) => {
           // We update optimistically so we need to check if the alert exists.
           const responseHasAlert = res.alerts[alertName] !== undefined;
-<<<<<<< HEAD
           if (responseHasAlert !== true) {
             setEnabled(false);
-=======
-          if (enabled !== responseHasAlert) {
-            setEnabled(responseHasAlert);
->>>>>>> 4fe3975 (adds optimstic updating)
           }
         })
         .catch(() => {
@@ -263,7 +258,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
         alertConfiguration: null,
         alertName: alertName,
       })
-<<<<<<< HEAD
         .then((res) => {
           setCustomValue('');
           const responseHasAlert = res.alerts[alertName] !== undefined;
@@ -272,9 +266,6 @@ export const EventTypeCustomHealthCheckRow: React.FC<
             setEnabled(true);
           }
         })
-=======
-        .then(() => setCustomValue(''))
->>>>>>> 4fe3975 (adds optimstic updating)
         .catch(() => {
           setErrorMessage(UNABLE_TO_SUBSCRIBE);
           setEnabled(true);
