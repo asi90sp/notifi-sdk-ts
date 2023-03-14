@@ -219,6 +219,7 @@ const useNotifiClient = (
     isInitialized: boolean;
     isTokenExpired: boolean;
     expiry: string | null;
+    useCustomCheck: boolean;
   }> => {
   const { env, dappAddress, walletPublicKey, walletBlockchain } = config;
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -415,6 +416,7 @@ const useNotifiClient = (
         throw new Error('Signer cannot be null');
       }
 
+      console.log('hit within usenotificlient');
       const timestamp = Math.round(Date.now() / 1000);
 
       setLoading(true);
@@ -425,6 +427,65 @@ const useNotifiClient = (
           timestamp,
           signer,
         });
+
+        console.log('signuature', signature);
+        const result = await service.logInFromDapp({
+          accountId:
+            walletBlockchain === 'APTOS' ||
+            walletBlockchain === 'ACALA' ||
+            walletBlockchain === 'NEAR'
+              ? config.accountAddress
+              : undefined,
+          walletPublicKey,
+          dappAddress,
+          timestamp,
+          signature,
+          walletBlockchain,
+        });
+
+        await handleLogInResult(result);
+
+        return result;
+      } catch (e: unknown) {
+        setIsAuthenticated(false);
+        if (e instanceof Error) {
+          setError(e);
+        } else {
+          setError(new NotifiClientError(e));
+        }
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [
+      config,
+      dappAddress,
+      service,
+      walletBlockchain,
+      walletPublicKey,
+      handleLogInResult,
+    ],
+  );
+  /**
+   * Log in to Notifi
+   *
+   * @remarks
+   * Log in to Notif and obtain security context for future calls to set/retrieve account data
+   *
+   * @returns {ClientData} User's stored values
+   * <br>
+   * <br>
+   * See [Alert Creation Guide]{@link https://docs.notifi.network} for more information on creating Alerts
+   */
+  const customLogInWithSignature = useCallback(
+    async (signature: string) => {
+      console.log('hit within usenotificlient');
+      const timestamp = Math.round(Date.now() / 1000);
+
+      setLoading(true);
+      try {
+        console.log('signuature', signature);
         const result = await service.logInFromDapp({
           accountId:
             walletBlockchain === 'APTOS' ||
@@ -1419,6 +1480,7 @@ const useNotifiClient = (
     connectWallet,
     logIn,
     logOut,
+    customLogInWithSignature,
     createAlert,
     createBonfidaAuctionSource,
     createMetaplexAuctionSource,

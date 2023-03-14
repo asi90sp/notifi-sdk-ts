@@ -354,6 +354,7 @@ export type NotifiClient = Readonly<{
   ) => Promise<CompleteLoginViaTransactionResult>;
   fetchData: () => Promise<ClientData>;
   logIn: (signer: SignMessageParams) => Promise<User>;
+  customLogInWithSignature: (signature: string) => Promise<User>;
   logOut: () => Promise<void>;
   connectWallet: (input: ConnectWalletParams) => Promise<ConnectedWallet>;
   createAlert: (input: ClientCreateAlertInput) => Promise<Alert>;

@@ -198,6 +198,7 @@ export const useNotifiSubscribe: ({
     }, [walletPublicKey, client, params, render]);
 
   const logIn = useCallback(async (): Promise<SubscriptionData> => {
+    console.log('hit within login');
     setLoading(true);
     if (!client.isAuthenticated) {
       if (useHardwareWallet) {
@@ -221,6 +222,34 @@ export const useNotifiSubscribe: ({
     render,
     setLoading,
   ]);
+  const logInWithSignature = useCallback(
+    async (signature: string): Promise<SubscriptionData> => {
+      console.log('hit within login');
+      setLoading(true);
+      if (!client.isAuthenticated) {
+        if (useHardwareWallet) {
+          await logInViaHardwareWallet();
+        } else {
+          await client.customLogInWithSignature(signature);
+        }
+      }
+
+      const newData = await client.fetchData();
+      const results = render(newData);
+      setLoading(false);
+      return results;
+    },
+    [
+      client.isAuthenticated,
+      client.logIn,
+      client.fetchData,
+      params,
+      useHardwareWallet,
+      logInViaHardwareWallet,
+      render,
+      setLoading,
+    ],
+  );
 
   const updateAlertInternal = useCallback(
     async (
