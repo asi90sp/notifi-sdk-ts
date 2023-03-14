@@ -580,6 +580,7 @@ export const useNotifiSubscribe: ({
     isInitialized: client.isInitialized,
     isTokenExpired: client.isTokenExpired,
     logIn,
+    logInWithSignature,
     subscribe,
     updateTargetGroups,
     subscribeWallet,
