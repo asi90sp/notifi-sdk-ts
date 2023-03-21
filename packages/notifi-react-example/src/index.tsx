@@ -4,6 +4,7 @@ import * as ReactDOMClient from 'react-dom/client';
 
 import { AcalaWalletContextProvider } from './AcalaWalletContextProvider';
 import App from './App';
+import { CosmosContextProvider } from './CosmosContextProvider';
 import { SolanaWalletProvider } from './SolanaWalletProvider';
 import './index.css';
 
@@ -14,7 +15,9 @@ if (container != null) {
     <React.StrictMode>
       <AcalaWalletContextProvider>
         <SolanaWalletProvider>
-          <App />
+          <CosmosContextProvider>
+            <App />
+          </CosmosContextProvider>
         </SolanaWalletProvider>
       </AcalaWalletContextProvider>
     </React.StrictMode>,
