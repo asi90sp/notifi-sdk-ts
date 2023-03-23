@@ -44,6 +44,6 @@ export const verifyCosmos = (
   return verifySignatureBytes(
     stdSignMsg,
     Buffer.from(signature, 'base64'),
-    Buffer.from(initialParams.walletPublicKey, 'hex'),
+    Buffer.from(initialParams.walletPublicKey, 'base64'),
   );
 };

@@ -8,18 +8,35 @@ import {
 } from '@cosmjs/amino';
 import { WalletAccount } from '@cosmos-kit/core';
 import { useChain } from '@cosmos-kit/react';
+import { arrayify } from '@ethersproject/bytes';
 import {
   NotifiContext,
   NotifiSubscriptionCard,
 } from '@notifi-network/notifi-react-card';
 import '@notifi-network/notifi-react-card/dist/index.css';
-import { verifySignatureBytes } from '@tendermint/sig';
+import { toCanonicalJSONBytes } from '@tendermint/belt';
+import {
+  createSignature,
+  createWalletFromMnemonic,
+  sha256,
+  sign,
+  verifySignatureBytes,
+} from '@tendermint/sig';
+import { bech32 } from 'bech32';
+import { Address as EthereumUtilsAddress } from 'ethereumjs-util';
+import { Wallet } from 'ethers';
 import React, { useEffect, useState } from 'react';
+import {
+  ecdsaVerify,
+  ecdsaSign as secp256k1EcdsaSign,
+  publicKeyCreate as secp256k1PublicKeyCreate,
+} from 'secp256k1';
 
 import './NotifiCard.css';
+import { getEthereumMessage, verifyCosmos } from './verifyCosmos';
 
 export const CosmosCard: React.FC = () => {
-  const { signAmino, address, getAccount } = useChain('injective');
+  const { signDirect, signAmino, address, getAccount } = useChain('injective');
 
   const [account, setAccount] = useState<WalletAccount | undefined>(undefined);
 
@@ -43,15 +60,15 @@ export const CosmosCard: React.FC = () => {
 
   return (
     <div className="container">
-      <NotifiContext
-        dappAddress="junitest.xyz"
-        walletBlockchain="ETHEREUM"
-        env="Development"
-        walletPublicKey={pkey}
-        signMessage={async (msg) => {
-          console.log('signing', account.address, pkey);
+      <button
+        onClick={async () => {
+          const timestamp = Math.round(Date.now() / 1000);
+          const msg = getEthereumMessage({
+            walletPublicKey: pkey,
+            dappAddress: 'junitest.xyz',
+            timestamp,
+          });
 
-          console.log('msg', msg, Buffer.from(msg).toString('utf8'));
           const signDoc = {
             chain_id: '',
             account_number: '0',
@@ -69,34 +86,31 @@ export const CosmosCard: React.FC = () => {
             ],
           };
 
+          console.log('signing', account.address, pkey);
+
           const result = await signAmino(account.address, signDoc);
-          console.log('result', signDoc, result);
+          console.log('result', result, result.signature.signature);
 
-          const stdSignMsg = {
-            fee: { amount: [], gas: '0' },
-            memo: '',
-            msgs: [
-              {
-                type: 'sign/MsgSignData',
-                value: {
-                  signer: account.address,
-                  data: Buffer.from(msg).toString('base64'),
-                },
-              },
-            ],
-            chain_id: '',
-            account_number: '0',
-            sequence: '0',
-          };
-
-          const verified = verifySignatureBytes(
-            stdSignMsg,
-            Buffer.from(result.signature.signature, 'base64'),
-            Buffer.from(pkey, 'base64'),
+          const verified = verifyCosmos(
+            {
+              walletPublicKey: pkey,
+              dappAddress: 'junitest.xyz',
+              timestamp,
+            },
+            result.signature.signature,
           );
 
-          console.log('Verifysignature', verified);
-
+          console.log('verified:', verified);
+        }}
+      >
+        CLICK ME
+      </button>
+      <NotifiContext
+        dappAddress="junitest.xyz"
+        walletBlockchain="ETHEREUM"
+        env="Development"
+        walletPublicKey={pkey}
+        signMessage={async (msg) => {
           throw new Error('stop login');
         }}
       >
