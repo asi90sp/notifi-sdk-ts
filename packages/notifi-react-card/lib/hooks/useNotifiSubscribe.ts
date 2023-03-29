@@ -384,6 +384,7 @@ export const useNotifiSubscribe: ({
             name: alertName,
             phoneNumber: finalPhoneNumber,
             sourceId: '',
+            discord: '',
             targetGroupName,
             telegramId: finalTelegramId,
             sourceIds,
@@ -433,6 +434,8 @@ export const useNotifiSubscribe: ({
           const alert = await client.updateAlert({
             alertId: existingAlert.id,
             emailAddress: finalEmail,
+            // NOTE: TO UPDATE
+            discord: '',
             phoneNumber: finalPhoneNumber,
             telegramId: finalTelegramId,
           });
@@ -441,9 +444,12 @@ export const useNotifiSubscribe: ({
         } else {
           // Call serially because of limitations
           await deleteThisAlert();
+          // NOTE: TO UPDATE
+
           const alert = await client.createAlert({
             emailAddress: finalEmail,
             filterId: filter.id,
+            discord: '',
             filterOptions: filterOptions ?? undefined,
             groupName: 'managed',
             name: alertName,
@@ -526,6 +532,7 @@ export const useNotifiSubscribe: ({
         await client.ensureTargetGroup({
           emailAddress: finalEmail,
           name: targetGroupName,
+          discord: '',
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
         });
@@ -564,6 +571,7 @@ export const useNotifiSubscribe: ({
     await client.ensureTargetGroup({
       emailAddress: finalEmail,
       name: targetGroupName,
+      discord: '',
       phoneNumber: finalPhoneNumber,
       telegramId: finalTelegramId,
     });
@@ -610,6 +618,7 @@ export const useNotifiSubscribe: ({
         await client.ensureTargetGroup({
           emailAddress: finalEmail,
           name: targetGroupName,
+          discord: '',
           phoneNumber: finalPhoneNumber,
           telegramId: finalTelegramId,
         });
