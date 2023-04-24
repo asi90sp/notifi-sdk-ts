@@ -45,8 +45,10 @@ export const EventTypeXMTPRow: React.FC<EventTypeXMPTRowProps> = ({
   const alertName = useMemo<string>(() => config.name, [config]);
 
   const alertConfiguration = useMemo<AlertConfiguration>(() => {
+    const xmtpTopics = config.XMTPTopics ?? [];
+
     return XMTPToggleConfiguration({
-      XMTPTopics: resolveStringArrayRef(config.name, config.XMTPTopics, inputs),
+      XMTPTopics: resolveStringArrayRef(config.name, xmtpTopics, inputs),
     });
   }, [alertName, config]);
 
