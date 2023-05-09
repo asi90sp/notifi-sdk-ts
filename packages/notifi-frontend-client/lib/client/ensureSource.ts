@@ -648,19 +648,10 @@ export type HealthCheckInputs =
   | HealthCheckEventInputsWithIndex
   | HealthCheckEventInputsWithCustomPercentage;
 
-const healthCheckInputsValidator = (
-  inputs: Record<string, unknown>,
-): inputs is HealthCheckInputs => {
-  if ('index' in inputs || 'customPercentage' in inputs) {
-    return true;
-  }
-  return false;
-};
-
 const getHealthCheckFilter = (
   source: Types.SourceFragmentFragment,
   eventType: HealthCheckEventTypeItem,
-  inputs: HealthCheckInputs,
+  inputs: HealthCheckInputs | Record<string, unknown>,
 ): GetFilterResults => {
   const filter = source.applicableFilters?.find(
     (it) => it?.filterType === 'VALUE_THRESHOLD',
@@ -675,11 +666,12 @@ const getHealthCheckFilter = (
     inputs,
   );
 
-  let threshold = 0;
-  let thresholdDirection: ThresholdDirection = 'below';
+  // Default: checkRatios[0]
+  let threshold = checkRatios[0].ratio;
+  let thresholdDirection = checkRatios[0].type;
 
-  const checkInputsCategory = (
-    inputs: HealthCheckInputs,
+  const checkInputsIsWithIndex = (
+    inputs: Record<string, unknown>,
   ): inputs is HealthCheckEventInputsWithIndex => {
     if ('index' in inputs) {
       return true;
@@ -687,10 +679,19 @@ const getHealthCheckFilter = (
     return false;
   };
 
-  if (checkInputsCategory(inputs)) {
+  const checkInputsIsWithCustomPercentage = (
+    inputs: Record<string, unknown>,
+  ): inputs is HealthCheckEventInputsWithCustomPercentage => {
+    if ('customPercentage' in inputs) {
+      return true;
+    }
+    return false;
+  };
+
+  if (checkInputsIsWithIndex(inputs)) {
     threshold = checkRatios[inputs.index].ratio;
     thresholdDirection = checkRatios[inputs.index].type;
-  } else {
+  } else if (checkInputsIsWithCustomPercentage(inputs)) {
     threshold = inputs.customPercentage;
     thresholdDirection = inputs.thresholdDirection;
   }
@@ -806,9 +807,6 @@ export const ensureSourceAndFilters = async (
       };
     }
     case 'healthCheck': {
-      if (!healthCheckInputsValidator(inputs)) {
-        throw new Error('Invalid healthCheck inputs');
-      }
       const { filter, filterOptions } = getHealthCheckFilter(
         sources[0],
         eventType,
